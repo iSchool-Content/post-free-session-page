@@ -329,6 +329,9 @@ section + section{margin-top:clamp(48px,6vw,88px);}
 .promo-badge{font-family:var(--font-display);font-weight:800;font-size:var(--fs-sm);background:var(--orange);color:var(--brand-deep);padding:3px 11px;border-radius:var(--r-pill);letter-spacing:.01em;}
 .promo-deadline{font-weight:800;}
 .promo-emoji{font-size:1.05rem;line-height:1;}
+.promo-cd{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-display);font-weight:800;font-variant-numeric:tabular-nums;}
+.promo-cd .seg{background:var(--brand-deep);color:var(--on-dark);min-width:28px;text-align:center;padding:3px 6px;border-radius:7px;font-size:var(--fs-sm);}
+.promo-cd .colon{color:var(--brand-deep);font-weight:800;}
 .promo-spacer{flex:1;}
 .promo-close{flex-shrink:0;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:50%;background:transparent;color:var(--brand-deep);line-height:1;transition:background .15s;}
 .promo-close:hover{background:oklch(0.42 0.17 258 / .12);}
@@ -403,7 +406,8 @@ section + section{margin-top:clamp(48px,6vw,88px);}
       <span class="promo-emoji" aria-hidden="true">🎉</span>
       <span class="promo-badge t" data-en="30% OFF" data-ar="خصم 30%">30% OFF</span>
       <span class="t" data-en="your first semester —" data-ar="على فصلك الأول —">your first semester —</span>
-      <span class="promo-deadline t" data-en="ends Sunday" data-ar="ينتهي الأحد">ends Sunday</span>
+      <span class="t" data-en="ends in" data-ar="ينتهي خلال">ends in</span>
+      <span class="promo-cd" id="promo-cd" role="timer" aria-label="Offer countdown"><span class="seg" id="cd-h">02</span><span class="colon">:</span><span class="seg" id="cd-m">00</span><span class="colon">:</span><span class="seg" id="cd-s">00</span></span>
     </p>
     <span class="promo-spacer"></span>
     <button class="promo-close" id="promo-close" onclick="dismissPromo()" aria-label="Dismiss offer">
@@ -974,6 +978,28 @@ function dismissPromo(){
   try{ localStorage.setItem('ischool_promo30_dismissed','1'); }catch(e){}
 }
 try{ if(localStorage.getItem('ischool_promo30_dismissed')==='1'){ document.getElementById('promo').hidden=true; } }catch(e){}
+
+/* ----- limited-offer countdown (2-hour window, persists across refreshes) ----- */
+const PROMO_WINDOW_MS=2*60*60*1000;
+function promoDeadline(){
+  let dl=0;
+  try{ dl=parseInt(localStorage.getItem('ischool_promo_deadline')||'0',10); }catch(e){}
+  const now=Date.now();
+  if(!dl || dl<=now){ dl=now+PROMO_WINDOW_MS; try{ localStorage.setItem('ischool_promo_deadline',String(dl)); }catch(e){} }
+  return dl;
+}
+let promoEnd=promoDeadline();
+function cdPad(n){return n<10?'0'+n:''+n;}
+function tickCountdown(){
+  const h=document.getElementById('cd-h'); if(!h) return;
+  let rem=promoEnd-Date.now();
+  if(rem<=0){ promoEnd=Date.now()+PROMO_WINDOW_MS; try{ localStorage.setItem('ischool_promo_deadline',String(promoEnd)); }catch(e){} rem=PROMO_WINDOW_MS; }
+  h.textContent=cdPad(Math.floor(rem/3600000));
+  document.getElementById('cd-m').textContent=cdPad(Math.floor(rem%3600000/60000));
+  document.getElementById('cd-s').textContent=cdPad(Math.floor(rem%60000/1000));
+}
+tickCountdown();
+setInterval(tickCountdown,1000);
 
 renderRoad('python');
 renderTimeline();
