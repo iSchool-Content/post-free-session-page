@@ -6,10 +6,20 @@
 <title>iSchool – Your child's learning path</title>
 <link rel="icon" type="image/png" href="Icon.png">
 <link rel="apple-touch-icon" href="Icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/SomarRounded-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/SomarRounded-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* ============================================================
+   SOMAR ROUNDED — self-hosted, covers Latin + Arabic
+============================================================ */
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:300;font-display:swap;src:url('fonts/SomarRounded-Light.woff2') format('woff2');}
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/SomarRounded-Regular.woff2') format('woff2');}
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/SomarRounded-Medium.woff2') format('woff2');}
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/SomarRounded-SemiBold.woff2') format('woff2');}
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/SomarRounded-Bold.woff2') format('woff2');}
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:800;font-display:swap;src:url('fonts/SomarRounded-ExtraBold.woff2') format('woff2');}
+@font-face{font-family:'Somar Rounded';font-style:normal;font-weight:900;font-display:swap;src:url('fonts/SomarRounded-Black.woff2') format('woff2');}
+
 /* ============================================================
    DESIGN TOKENS
    Brand colours preserved (iSchool blue / gold / orange) but
@@ -54,8 +64,8 @@
   --orange-ink:  oklch(0.45 0.15 50);
 
   /* type */
-  --font-display: 'Bricolage Grotesque', 'Readex Pro', system-ui, sans-serif;
-  --font-body:    'Hanken Grotesk', 'Readex Pro', system-ui, sans-serif;
+  --font-display: 'Somar Rounded', system-ui, sans-serif;
+  --font-body:    'Somar Rounded', system-ui, sans-serif;
 
   --fs-h1:   clamp(2.1rem, 1.25rem + 3.6vw, 3.4rem);
   --fs-h2:   clamp(1.45rem, 1.15rem + 1.2vw, 1.95rem);
@@ -78,9 +88,6 @@
   --ease: cubic-bezier(.2,.8,.2,1);
   --shadow: 0 1px 2px oklch(0.42 0.17 258 / .06), 0 8px 24px oklch(0.42 0.17 258 / .07);
 }
-
-/* Arabic swaps to a multiscript face that carries both display & body */
-html[lang="ar"]{ --font-display:'Readex Pro', system-ui, sans-serif; --font-body:'Readex Pro', system-ui, sans-serif; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
 html{-webkit-text-size-adjust:100%;}
@@ -796,19 +803,8 @@ const tracks={
 
 let lang='en', curTrack='python', curGrade=4, activeStage='python';
 
-let arFontLoaded=false;
-function ensureArabicFont(){
-  if(arFontLoaded) return;
-  arFontLoaded=true;
-  const link=document.createElement('link');
-  link.rel='stylesheet';
-  link.href='https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap';
-  document.head.appendChild(link);
-}
-
 function setLang(l){
   lang=l;
-  if(l==='ar') ensureArabicFont();
   document.documentElement.lang=l;
   document.documentElement.dir=(l==='ar'?'rtl':'ltr');
   document.getElementById('btn-en').setAttribute('aria-pressed', l==='en');
