@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iSchool – Your child's learning path</title>
+<link rel="icon" type="image/png" href="Icon.png">
+<link rel="apple-touch-icon" href="Icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   Brand colours preserved (iSchool blue / gold / orange) but
+   expressed in OKLCH, rebalanced to 60-30-10. Neutrals are
+   tinted toward the brand hue (~256) for quiet cohesion.
+============================================================ */
+:root{
+  /* brand */
+  --brand:        oklch(0.59 0.20 256);   /* #056FEC */
+  --brand-deep:   oklch(0.42 0.17 258);   /* #043FAD */
+  --brand-bright: oklch(0.72 0.16 238);   /* #05ACFF */
+  --gold:         oklch(0.86 0.16 92);    /* #FFD700 */
+  --orange:       oklch(0.73 0.18 50);    /* #FF7F1C */
+
+  /* surfaces (neutrals tinted toward brand blue) */
+  --bg:         oklch(0.985 0.008 256);
+  --surface:    oklch(0.998 0.003 256);
+  --surface-2:  oklch(0.965 0.013 256);
+  --tint-blue:  oklch(0.95 0.03 252);
+  --tint-warm:  oklch(0.95 0.045 62);
+  --line:       oklch(0.90 0.022 256);
+  --line-2:     oklch(0.84 0.03 256);
+
+  /* ink */
+  --ink:    oklch(0.34 0.06 258);   /* headings / strong */
+  --body:   oklch(0.42 0.05 256);   /* body text */
+  --muted:  oklch(0.47 0.035 256);  /* secondary (>=4.5:1 on bg) */
+
+  /* text on dark/brand surfaces */
+  --on-dark:   oklch(0.98 0.01 256);
+  --on-dark-2: oklch(0.83 0.03 256);
+
+  /* translucent overlays on dark/brand surfaces */
+  --glass:       oklch(0.98 0.01 256 / .10);
+  --glass-soft:  oklch(0.98 0.01 256 / .07);
+  --glass-hover: oklch(0.98 0.01 256 / .18);
+  --glass-line:  oklch(0.98 0.01 256 / .20);
+  --gold-fill:   oklch(0.86 0.16 92 / .16);
+  --gold-line:   oklch(0.86 0.16 92 / .42);
+
+  /* accent ink that clears AA on warm tints */
+  --orange-ink:  oklch(0.45 0.15 50);
+
+  /* type */
+  --font-display: 'Bricolage Grotesque', 'Readex Pro', system-ui, sans-serif;
+  --font-body:    'Hanken Grotesk', 'Readex Pro', system-ui, sans-serif;
+
+  --fs-h1:   clamp(2.1rem, 1.25rem + 3.6vw, 3.4rem);
+  --fs-h2:   clamp(1.45rem, 1.15rem + 1.2vw, 1.95rem);
+  --fs-h3:   1.1875rem;
+  --fs-lg:   1.0625rem;
+  --fs-base: 1rem;
+  --fs-sm:   0.875rem;
+  --fs-xs:   0.78125rem;
+  --fs-2xs:  0.6875rem;
+
+  /* spacing (4pt scale) */
+  --space-3xs: 4px;  --space-2xs: 8px;  --space-xs: 12px; --space-sm: 16px;
+  --space-md: 24px;  --space-lg: 32px;  --space-xl: 48px; --space-2xl: 64px;
+  --space-3xl: 96px;
+  --gutter: clamp(20px, 5vw, 60px);
+
+  /* radius */
+  --r-sm: 10px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
+
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --shadow: 0 1px 2px oklch(0.42 0.17 258 / .06), 0 8px 24px oklch(0.42 0.17 258 / .07);
+}
+
+/* Arabic swaps to a multiscript face that carries both display & body */
+html[lang="ar"]{ --font-display:'Readex Pro', system-ui, sans-serif; --font-body:'Readex Pro', system-ui, sans-serif; }
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--body);
+  line-height:1.6;
+  font-size:var(--fs-base);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--font-display);color:var(--ink);line-height:1.1;letter-spacing:-.01em;text-wrap:balance;}
+p{text-wrap:pretty;}
+em{font-style:normal;}
+button{font:inherit;cursor:pointer;}
+
+:focus-visible{outline:2.5px solid var(--brand);outline-offset:3px;border-radius:5px;}
+.hero :focus-visible,.trust :focus-visible{outline-color:var(--on-dark);}
+
+.shell{max-width:1180px;margin-inline:auto;padding-inline:var(--gutter);}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+/* ============================ NAV ============================ */
+.site-head{
+  background:var(--surface);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:20;
+}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);height:66px;}
+.nav-logo{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.45rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;}
+.nav-logo em{color:var(--brand);}
+.nav-mark{height:36px;width:auto;display:block;}
+.nav-right{display:flex;align-items:center;gap:var(--space-sm);}
+.nav-tag{font-size:var(--fs-xs);color:var(--muted);font-weight:600;}
+.lang-switch{display:flex;gap:var(--space-3xs);background:var(--surface-2);border-radius:var(--r-pill);padding:3px;}
+.lbtn{
+  min-height:44px;padding:0 15px;border-radius:var(--r-pill);border:none;background:transparent;
+  color:var(--muted);font-size:var(--fs-xs);font-weight:700;transition:color .15s,background .15s;
+}
+.lbtn[aria-pressed="true"]{background:var(--brand);color:var(--on-dark);}
+
+/* ============================ HERO ============================ */
+.hero{
+  background:var(--brand-deep);
+  color:var(--on-dark);
+  position:relative;overflow:hidden;
+  padding-block:clamp(40px,6vw,72px);
+}
+.hero::before{ /* soft brand glow, purposeful — not glassmorphism */
+  content:'';position:absolute;inset:auto -10% -55% auto;width:min(560px,80%);aspect-ratio:1;
+  background:radial-gradient(circle, var(--brand) 0%, transparent 70%);opacity:.55;pointer-events:none;
+}
+.hero .shell{position:relative;z-index:1;}
+.kicker{display:inline-block;font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:var(--space-sm);}
+.hero h1{font-size:var(--fs-h1);font-weight:800;color:var(--on-dark);max-width:18ch;}
+.hero h1 em{color:var(--gold);}
+.hero-sub{font-size:var(--fs-lg);color:var(--on-dark-2);font-weight:400;margin-top:var(--space-sm);max-width:54ch;}
+
+.hero-head{max-width:48ch;}
+.tl-module{margin-top:clamp(28px,4vw,44px);}
+
+/* compact grade selector */
+.grade-mini{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:var(--space-md);font-size:var(--fs-sm);}
+.grade-mini-lbl{color:var(--on-dark-2);font-weight:700;}
+.grade-select{min-height:42px;padding-inline:16px 38px;border-radius:var(--r-pill);border:1px solid var(--glass-line);background:var(--glass) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat;background-position:right 14px center;color:var(--on-dark);font-family:var(--font-display);font-weight:800;font-size:var(--fs-base);appearance:none;-webkit-appearance:none;}
+.grade-select:hover{background-color:var(--glass-hover);}
+html[dir="rtl"] .grade-select{background-position:left 14px center;padding-inline:38px 16px;}
+.grade-arrow{color:var(--gold);font-weight:800;}
+html[dir="rtl"] .grade-arrow{display:inline-block;transform:scaleX(-1);}
+.grade-hint{color:var(--on-dark-2);font-weight:500;}
+
+/* interactive track timeline */
+.tl{display:flex;align-items:flex-start;overflow-x:auto;scrollbar-width:none;padding-bottom:var(--space-2xs);}
+.tl::-webkit-scrollbar{display:none;}
+.tlnode{flex:0 0 116px;background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:9px;padding:4px 2px;color:var(--on-dark);}
+.tl-badge{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:var(--fs-sm);background:var(--glass-soft);border:2px solid var(--glass-line);color:var(--on-dark);transition:transform .2s var(--ease),box-shadow .2s var(--ease);}
+.tl-badge svg{width:20px;height:20px;}
+.tlnode.done .tl-badge{background:var(--brand-bright);border-color:var(--brand-bright);color:var(--brand-deep);}
+.tlnode.current .tl-badge{background:var(--gold);border-color:var(--gold);color:var(--brand-deep);box-shadow:0 0 0 6px var(--gold-fill);}
+.tlnode.locked{opacity:.5;}
+.tlnode.selected .tl-badge{box-shadow:0 0 0 3px var(--on-dark);}
+.tlnode.current.selected .tl-badge{box-shadow:0 0 0 3px var(--on-dark),0 0 0 9px var(--gold-fill);}
+.tlnode:hover .tl-badge{transform:translateY(-2px);}
+.tl-name{font-size:var(--fs-xs);font-weight:700;line-height:1.25;text-align:center;}
+.tlnode.current .tl-name{color:var(--gold);}
+.tl-conn{flex:1 1 26px;min-width:18px;height:3px;margin-top:25px;border-radius:2px;background:var(--glass-line);}
+.tl-conn.colored{background:var(--brand-bright);}
+
+/* detail panel (light card inside the dark hero) */
+.tl-panel{margin-top:var(--space-md);background:var(--surface);border-radius:var(--r-lg);padding:clamp(20px,3vw,32px);box-shadow:var(--shadow);color:var(--body);}
+.tlp-head{display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;}
+.tlp-name{font-family:var(--font-display);font-size:var(--fs-h2);font-weight:700;color:var(--ink);}
+.tlp-status{font-size:var(--fs-2xs);font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:var(--r-pill);}
+.tlp-status.current{background:var(--tint-warm);color:var(--orange-ink);}
+.tlp-status.done{background:var(--tint-blue);color:var(--brand-deep);}
+.tlp-status.locked{background:var(--surface-2);color:var(--muted);}
+.tlp-meta{display:flex;gap:var(--space-2xs);flex-wrap:wrap;margin-top:var(--space-2xs);}
+.tlp-chip{font-size:var(--fs-xs);font-weight:700;color:var(--brand-deep);background:var(--tint-blue);padding:3px 11px;border-radius:var(--r-pill);}
+.tlp-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);margin-top:var(--space-md);}
+.tlp-lbl{font-size:var(--fs-2xs);font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--brand-deep);}
+.tlp-block p{font-size:var(--fs-sm);color:var(--body);margin-top:4px;max-width:46ch;}
+.tlp-cap-img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface-2);margin:8px 0;}
+.tlp-next{margin-top:var(--space-md);padding-top:var(--space-sm);border-top:1px solid var(--line);display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.tlp-next-lbl{font-size:var(--fs-2xs);font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--brand-deep);}
+.tlp-arrow{color:var(--orange);font-weight:800;}
+html[dir="rtl"] .tlp-arrow{display:inline-block;transform:scaleX(-1);}
+.tlp-next-val{font-family:var(--font-display);font-weight:700;color:var(--ink);}
+@media (max-width:560px){.tlp-grid{grid-template-columns:1fr;}}
+
+/* ========================= MAIN ========================= */
+main{padding-block:clamp(40px,5vw,72px);}
+section + section{margin-top:clamp(48px,6vw,88px);}
+
+.sec-head{margin-bottom:var(--space-lg);}
+.sec-kicker{display:inline-flex;align-items:center;gap:9px;font-size:var(--fs-xs);font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--brand-deep);margin-bottom:var(--space-2xs);}
+.sec-kicker::before{content:'';width:22px;height:2px;background:var(--gold);border-radius:2px;}
+.sec-head h2{font-size:var(--fs-h2);font-weight:700;}
+.sec-head p{color:var(--muted);max-width:60ch;margin-top:6px;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,3vw,40px);align-items:start;}
+
+/* ROADMAP */
+.road-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--space-md);box-shadow:var(--shadow);}
+.road-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);margin-bottom:var(--space-md);}
+.road-name{font-family:var(--font-display);font-size:var(--fs-h3);font-weight:700;color:var(--ink);}
+.road-badge{background:var(--tint-blue);color:var(--brand-deep);font-size:var(--fs-xs);font-weight:700;padding:4px 12px;border-radius:var(--r-pill);white-space:nowrap;}
+.step-list{list-style:none;}
+.step-row{display:flex;align-items:flex-start;gap:var(--space-sm);padding:7px 0;}
+.step-l{display:flex;flex-direction:column;align-items:center;flex-shrink:0;align-self:stretch;}
+.sdot{width:30px;height:30px;border-radius:50%;border:2px solid var(--line-2);background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:var(--fs-xs);font-weight:800;color:var(--muted);flex-shrink:0;}
+.sdot.done{background:var(--brand);border-color:var(--brand);color:var(--on-dark);}
+.sdot.now{background:var(--orange);border-color:var(--orange);color:var(--brand-deep);box-shadow:0 0 0 5px oklch(0.73 0.18 50 / .16);}
+.sline{width:2px;flex:1;min-height:10px;background:var(--line);margin-block:2px;}
+.sline.done{background:var(--brand);}
+.step-r{padding-top:3px;}
+.sname{font-size:var(--fs-sm);font-weight:700;color:var(--ink);}
+.sname.now{color:var(--orange);}
+.sname.lock{color:var(--muted);font-weight:600;}
+.stags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.stag{font-size:var(--fs-2xs);font-weight:600;padding:2px 9px;border-radius:var(--r-pill);background:var(--surface-2);color:var(--body);}
+.stag.proj{background:var(--tint-warm);color:var(--orange-ink);}
+.stag.cap{background:var(--tint-blue);color:var(--brand-deep);}
+
+/* PACKAGES */
+.toggle-row{display:flex;align-items:center;gap:var(--space-xs);margin-bottom:var(--space-md);flex-wrap:wrap;}
+.tog{display:flex;background:var(--surface-2);border-radius:var(--r-pill);padding:4px;}
+.togbtn{min-height:44px;padding:0 18px;border-radius:var(--r-pill);border:none;background:transparent;font-size:var(--fs-sm);font-weight:700;color:var(--muted);transition:background .15s,color .15s;}
+.togbtn[aria-pressed="true"]{background:var(--brand);color:var(--on-dark);}
+.disc-pill{background:var(--tint-warm);color:var(--orange-ink);font-size:var(--fs-xs);font-weight:700;padding:5px 12px;border-radius:var(--r-pill);}
+
+.pkg-list{display:flex;flex-direction:column;gap:var(--space-sm);}
+.pkg{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--space-md);box-shadow:var(--shadow);position:relative;}
+.pkg.star{border:1.5px solid var(--orange);}
+.pkg-flag{position:absolute;top:-11px;inset-inline-end:18px;background:var(--orange);color:var(--brand-deep);font-size:var(--fs-2xs);font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 12px;border-radius:var(--r-pill);}
+.pkg-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-sm);margin-bottom:var(--space-xs);}
+.pkg-name{font-family:var(--font-display);font-size:var(--fs-h3);font-weight:700;color:var(--ink);}
+.pkg-sub{font-size:var(--fs-xs);color:var(--muted);font-weight:500;margin-top:2px;}
+.pkg-price-wrap{text-align:end;flex-shrink:0;}
+.pkg-price{display:flex;align-items:baseline;gap:4px;justify-content:flex-end;}
+.pkg-amount{font-family:var(--font-display);font-size:1.9rem;font-weight:800;color:var(--brand-deep);line-height:1;}
+.pkg-amount.on-promo{color:var(--orange);}
+.pkg-cur{font-size:var(--fs-xs);font-weight:600;color:var(--muted);}
+.pkg-was{font-size:var(--fs-xs);color:var(--muted);text-decoration:line-through;margin-top:3px;min-height:1em;}
+.pkg-feats{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:var(--space-sm);}
+.pkg-feats li{font-size:var(--fs-sm);font-weight:500;color:var(--body);display:flex;align-items:flex-start;gap:9px;}
+.pkg-feats li::before{content:'';flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--tint-blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23043FAD' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/12px no-repeat;}
+.btn{display:block;width:100%;margin-top:var(--space-md);min-height:48px;border-radius:var(--r-pill);font-size:var(--fs-sm);font-weight:700;border:1.5px solid var(--brand);transition:background .15s,color .15s,transform .15s;}
+.btn-primary{background:var(--brand);color:var(--on-dark);}
+.btn-primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);}
+.btn-ghost{background:var(--surface);color:var(--brand);}
+.btn-ghost:hover{background:var(--tint-blue);}
+.btn:active,.buy-cta:active,.ttab:active,.togbtn:active,.lbtn:active{transform:translateY(1px);}
+
+/* SYLLABUS */
+.syl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-sm);}
+.syl-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;}
+.syl-item:has([aria-expanded="true"]){border-color:var(--line-2);}
+.syl-h{margin:0;font:inherit;}
+.syl-hd{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);padding:var(--space-sm) var(--space-md);background:transparent;border:none;text-align:start;font-family:var(--font-body);}
+.syl-left{display:flex;align-items:center;gap:var(--space-sm);}
+.syl-num{width:28px;height:28px;border-radius:50%;background:var(--tint-blue);color:var(--brand-deep);font-size:var(--fs-xs);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.syl-title{font-size:var(--fs-sm);font-weight:700;color:var(--ink);}
+.syl-chev{flex-shrink:0;color:var(--muted);transition:transform .25s var(--ease);}
+.syl-hd[aria-expanded="true"] .syl-chev{transform:rotate(180deg);}
+.syl-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease);}
+.syl-body.open{grid-template-rows:1fr;}
+.syl-body-inner{overflow:hidden;}
+.syl-pad{padding:0 var(--space-md) var(--space-md) calc(var(--space-md) + 40px);}
+.syl-desc{font-size:var(--fs-sm);color:var(--muted);margin-bottom:var(--space-xs);max-width:60ch;}
+.syl-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:var(--space-sm);}
+
+/* end-of-module project callout */
+.proj-callout{display:flex;align-items:flex-start;gap:10px;padding:var(--space-sm) var(--space-sm) var(--space-sm) 13px;background:var(--tint-blue);border-radius:var(--r-sm);}
+.proj-callout.cap{background:var(--tint-warm);flex-wrap:wrap;}
+.proj-text{flex:1 1 60%;}
+.proj-img{flex:0 0 auto;width:120px;aspect-ratio:3/2;object-fit:cover;border-radius:8px;border:1px solid var(--line);margin-inline-start:auto;}
+.proj-ico{flex-shrink:0;font-size:1.05rem;line-height:1.35;}
+.proj-lbl{display:block;font-size:var(--fs-2xs);font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--brand-deep);}
+.proj-callout.cap .proj-lbl{color:var(--orange-ink);}
+.proj-name{display:block;font-size:var(--fs-sm);font-weight:700;color:var(--ink);margin-top:2px;}
+
+/* CAREERS — asymmetric, one featured to break the clone-grid pattern */
+.career-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--space-md);}
+.cc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--space-md);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;}
+.cc-role{font-size:var(--fs-sm);font-weight:700;color:var(--ink);}
+.cc-sal{font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:var(--brand-deep);}
+.cc-sub{font-size:var(--fs-2xs);font-weight:500;color:var(--muted);}
+.cc-apps{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.cc-app{font-size:var(--fs-2xs);background:var(--surface-2);border-radius:7px;padding:3px 9px;color:var(--body);font-weight:600;}
+.cc.feature{background:var(--brand-deep);border-color:var(--brand-deep);grid-column:span 2;flex-direction:column;justify-content:center;}
+.cc.feature .cc-role{color:var(--on-dark);font-size:var(--fs-h3);}
+.cc.feature .cc-sal{color:var(--gold);font-size:1.9rem;}
+.cc.feature .cc-sub{color:var(--on-dark-2);}
+.cc.feature .cc-app{background:var(--glass);color:var(--on-dark);}
+@media (max-width:640px){.cc.feature{grid-column:span 1;}}
+
+/* TRUST — lead statement + supporting stats (not a bare metric strip) */
+.trust{background:var(--brand-deep);color:var(--on-dark);padding-block:clamp(32px,4vw,52px);}
+.trust-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:clamp(24px,4vw,56px);align-items:center;}
+.trust-lead h2{color:var(--on-dark);font-size:var(--fs-h2);}
+.trust-lead p{color:var(--on-dark-2);margin-top:8px;max-width:40ch;}
+.trust-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-md) var(--space-lg);}
+.tr-val{font-family:var(--font-display);font-size:clamp(1.6rem,1.2rem+1.2vw,2.1rem);font-weight:800;color:var(--gold);line-height:1;}
+.tr-lbl{font-size:var(--fs-sm);font-weight:500;color:var(--on-dark-2);margin-top:4px;}
+
+/* BUY FOOTER */
+.buy{background:var(--bg);border-top:1px solid var(--line);padding-block:clamp(48px,6vw,80px);}
+.buy-inner{max-width:620px;margin-inline:auto;text-align:center;}
+.buy h2{font-size:var(--fs-h1);font-weight:800;}
+.buy h2 em{color:var(--orange);}
+.buy p{font-size:var(--fs-lg);color:var(--muted);margin-top:var(--space-xs);}
+.buy-cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;margin-top:var(--space-lg);padding:0 var(--space-xl);border:none;border-radius:var(--r-pill);background:var(--orange);color:var(--brand-deep);font-family:var(--font-display);font-size:1.0625rem;font-weight:800;box-shadow:0 10px 28px oklch(0.73 0.18 50 / .32);transition:transform .15s var(--ease),box-shadow .15s var(--ease);}
+.buy-cta:hover{transform:translateY(-2px);box-shadow:0 16px 34px oklch(0.73 0.18 50 / .40);}
+.buy-note{font-size:var(--fs-xs);color:var(--muted);margin-top:var(--space-sm);}
+
+/* ===================== PROMO BANNER ===================== */
+.promo{background:var(--gold);color:var(--brand-deep);}
+.promo[hidden]{display:none;}
+.promo-inner{display:flex;align-items:center;gap:var(--space-md);min-height:48px;padding-block:8px;}
+.promo-text{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:var(--fs-sm);font-weight:600;}
+.promo-badge{font-family:var(--font-display);font-weight:800;font-size:var(--fs-sm);background:var(--orange);color:var(--brand-deep);padding:3px 11px;border-radius:var(--r-pill);letter-spacing:.01em;}
+.promo-deadline{font-weight:800;}
+.promo-emoji{font-size:1.05rem;line-height:1;}
+.promo-spacer{flex:1;}
+.promo-close{flex-shrink:0;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:50%;background:transparent;color:var(--brand-deep);line-height:1;transition:background .15s;}
+.promo-close:hover{background:oklch(0.42 0.17 258 / .12);}
+.promo-close svg{width:16px;height:16px;}
+
+/* ===================== ALUMNI / SOCIAL PROOF ===================== */
+.alum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--space-md);}
+.alum{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--space-md);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:var(--space-sm);}
+.alum-top{display:flex;align-items:center;gap:var(--space-sm);}
+.alum-av{flex-shrink:0;width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--surface-2);border:1px solid var(--line);}
+.alum-name{font-size:var(--fs-base);font-weight:700;color:var(--ink);line-height:1.2;}
+.alum-meta{font-size:var(--fs-xs);font-weight:500;color:var(--muted);margin-top:2px;}
+.alum-now{border-top:1px solid var(--line);padding-top:var(--space-sm);}
+.alum-now-lbl{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-2xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-deep);margin-bottom:4px;}
+.alum-now-lbl::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--brand);}
+.alum-role{font-size:var(--fs-sm);font-weight:700;color:var(--ink);}
+.alum-co{font-size:var(--fs-sm);font-weight:500;color:var(--body);}
+.alum-co .at{color:var(--muted);}
+
+/* certificate showcase */
+.cert-inner{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:clamp(24px,4vw,48px);align-items:center;}
+.cert-frame{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--space-sm);box-shadow:var(--shadow);}
+.cert-img{display:block;width:100%;height:auto;border-radius:var(--r-sm);}
+.cert-body h2{font-size:var(--fs-h2);font-weight:700;}
+.cert-body p{color:var(--muted);max-width:54ch;margin-top:var(--space-2xs);}
+@media (max-width:760px){.cert-inner{grid-template-columns:1fr;}}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width:880px){
+  .two-col{grid-template-columns:1fr;}
+  .trust-inner{grid-template-columns:1fr;}
+}
+@media (max-width:560px){
+  .nav-tag{display:none;}
+  .syl-grid{grid-template-columns:1fr;}
+  .spec-strip{grid-template-columns:repeat(2,1fr);gap:var(--space-sm);}
+  .grade-row{grid-template-columns:repeat(6,1fr);}
+}
+
+/* ===================== MOTION ===================== */
+@keyframes riseIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;animation:riseIn .7s var(--ease) forwards;}
+.reveal.d1{animation-delay:.06s;}
+.reveal.d2{animation-delay:.14s;}
+.reveal.d3{animation-delay:.22s;}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+  .reveal{opacity:1;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="site-head">
+  <div class="shell nav">
+    <div class="nav-logo"><img class="nav-mark" src="Icon.png" alt="iSchool"></div>
+    <div class="nav-right">
+      <span class="nav-tag t" data-en="Online coding for kids" data-ar="تعليم البرمجة أونلاين">Online coding for kids</span>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button class="lbtn" id="btn-en" aria-pressed="true" onclick="setLang('en')">EN</button>
+        <button class="lbtn" id="btn-ar" aria-pressed="false" onclick="setLang('ar')">عربي</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- PROMO BANNER -->
+<aside class="promo" id="promo" aria-label="Special offer">
+  <div class="shell promo-inner">
+    <p class="promo-text">
+      <span class="promo-emoji" aria-hidden="true">🎉</span>
+      <span class="promo-badge t" data-en="30% OFF" data-ar="خصم 30%">30% OFF</span>
+      <span class="t" data-en="your first semester —" data-ar="على فصلك الأول —">your first semester —</span>
+      <span class="promo-deadline t" data-en="ends Sunday" data-ar="ينتهي الأحد">ends Sunday</span>
+    </p>
+    <span class="promo-spacer"></span>
+    <button class="promo-close" id="promo-close" onclick="dismissPromo()" aria-label="Dismiss offer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
+  </div>
+</aside>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="shell">
+    <div class="hero-head">
+      <span class="kicker t reveal" data-en="Recommended for your child" data-ar="موصى به لطفلك">Recommended for your child</span>
+      <h1 id="hero-title" class="t reveal d1" data-en="Your child's coding <em>journey</em>" data-ar="رحلة طفلك في <em>البرمجة</em>">Your child's coding <em>journey</em></h1>
+      <p class="hero-sub t reveal d2" data-en="Based on today's free session, here's the path we recommend. Tap any stage to see what's inside." data-ar="بناءً على الحصة المجانية اليوم، هذا هو المسار الذي نوصي به. اضغط أي مرحلة لمعرفة محتواها.">Based on today's free session, here's the path we recommend. Tap any stage to see what's inside.</p>
+    </div>
+
+    <div class="tl-module reveal d3">
+      <div class="grade-mini">
+        <label class="grade-mini-lbl t" for="grade-select" data-en="Your child's grade" data-ar="صف طفلك">Your child's grade</label>
+        <select id="grade-select" class="grade-select" onchange="selectGrade(+this.value)">
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          <option value="4" selected>4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+        </select>
+        <span class="grade-arrow" aria-hidden="true">→</span>
+        <span class="grade-hint t" data-en="recommended path shown below" data-ar="المسار الموصى به موضّح أدناه">recommended path shown below</span>
+      </div>
+
+      <div class="tl" id="timeline" role="tablist" aria-label="Coding track progression"></div>
+      <div class="tl-panel" id="tl-panel" role="tabpanel" tabindex="0" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="shell">
+
+  <!-- PATH + PACKAGES -->
+  <section class="two-col" aria-labelledby="path-h">
+    <div>
+      <div class="sec-head">
+        <span class="sec-kicker t" data-en="Step by step" data-ar="خطوة بخطوة">Step by step</span>
+        <h2 id="path-h" class="t" data-en="Your child's learning path" data-ar="مسار تعلم طفلك">Your child's learning path</h2>
+      </div>
+      <div class="road-card">
+        <div class="road-head">
+          <h3 class="road-name" id="road-name">Python Track</h3>
+          <span class="road-badge" id="road-badge">Grade 4–9</span>
+        </div>
+        <ol class="step-list" id="road-steps"></ol>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-head">
+        <span class="sec-kicker t" data-en="Flexible plans" data-ar="خطط مرنة">Flexible plans</span>
+        <h2 class="t" data-en="Choose your package" data-ar="اختر باقتك">Choose your package</h2>
+      </div>
+      <div class="toggle-row" role="group" aria-label="Billing period">
+        <div class="tog">
+          <button class="togbtn" id="tg-m" aria-pressed="true" onclick="setToggle('m')"><span class="t" data-en="Monthly" data-ar="شهري">Monthly</span></button>
+          <button class="togbtn" id="tg-f" aria-pressed="false" onclick="setToggle('f')"><span class="t" data-en="Full semester" data-ar="الفصل كامل">Full semester</span></button>
+        </div>
+        <span class="disc-pill" id="disc-pill" hidden>Save 20%</span>
+      </div>
+
+      <div class="pkg-list">
+        <article class="pkg">
+          <div class="pkg-top">
+            <div><h3 class="pkg-name t" data-en="Starter" data-ar="أساسي">Starter</h3><div class="pkg-sub t" data-en="4 sessions / month" data-ar="4 جلسات شهرياً">4 sessions / month</div></div>
+            <div class="pkg-price-wrap"><div class="pkg-price"><span class="pkg-amount" id="p1a">199</span><span class="pkg-cur" id="p1c">EGP/mo</span></div><div class="pkg-was" id="p1w"></div></div>
+          </div>
+          <ul class="pkg-feats">
+            <li class="t" data-en="4 live 1-on-1 sessions" data-ar="4 جلسات فردية مباشرة">4 live 1-on-1 sessions</li>
+            <li class="t" data-en="Full course materials included" data-ar="المواد الدراسية كاملة">Full course materials included</li>
+            <li class="t" data-en="Student progress dashboard" data-ar="لوحة تتبع تقدم الطالب">Student progress dashboard</li>
+            <li class="t" data-en="Monthly parent report" data-ar="تقرير شهري للوالدين">Monthly parent report</li>
+          </ul>
+          <button class="btn btn-ghost t" data-en="Start learning" data-ar="ابدأ التعلم">Start learning</button>
+        </article>
+
+        <article class="pkg star">
+          <span class="pkg-flag t" data-en="Most popular" data-ar="الأكثر شيوعاً">Most popular</span>
+          <div class="pkg-top">
+            <div><h3 class="pkg-name t" data-en="Pro" data-ar="برو">Pro</h3><div class="pkg-sub t" data-en="8 sessions / month · Full track" data-ar="8 جلسات شهرياً · المسار كامل">8 sessions / month · Full track</div></div>
+            <div class="pkg-price-wrap"><div class="pkg-price"><span class="pkg-amount" id="p2a">349</span><span class="pkg-cur" id="p2c">EGP/mo</span></div><div class="pkg-was" id="p2w"></div></div>
+          </div>
+          <ul class="pkg-feats">
+            <li class="t" data-en="8 live 1-on-1 sessions" data-ar="8 جلسات فردية مباشرة">8 live 1-on-1 sessions</li>
+            <li class="t" data-en="3 real-world projects" data-ar="3 مشاريع من الواقع">3 real-world projects</li>
+            <li class="t" data-en="Parent tracking dashboard" data-ar="لوحة متابعة للوالدين">Parent tracking dashboard</li>
+            <li class="t" data-en="Career path guidance" data-ar="توجيه المسار المهني">Career path guidance</li>
+            <li class="t" data-en="Semester completion certificate" data-ar="شهادة إتمام الفصل">Semester completion certificate</li>
+          </ul>
+          <button class="btn btn-primary t" data-en="Enroll in Pro" data-ar="اشترك في برو">Enroll in Pro</button>
+        </article>
+
+        <article class="pkg">
+          <div class="pkg-top">
+            <div><h3 class="pkg-name t" data-en="Elite" data-ar="إيليت">Elite</h3><div class="pkg-sub t" data-en="12 sessions / month · Mentorship" data-ar="12 جلسة شهرياً · مرشد خاص">12 sessions / month · Mentorship</div></div>
+            <div class="pkg-price-wrap"><div class="pkg-price"><span class="pkg-amount" id="p3a">499</span><span class="pkg-cur" id="p3c">EGP/mo</span></div><div class="pkg-was" id="p3w"></div></div>
+          </div>
+          <ul class="pkg-feats">
+            <li class="t" data-en="12 live 1-on-1 sessions" data-ar="12 جلسة فردية مباشرة">12 live 1-on-1 sessions</li>
+            <li class="t" data-en="5 portfolio projects" data-ar="5 مشاريع للبورتفوليو">5 portfolio projects</li>
+            <li class="t" data-en="Dedicated personal mentor" data-ar="مرشد شخصي مخصص">Dedicated personal mentor</li>
+            <li class="t" data-en="Hackathon entry" data-ar="دخول هاكاثون">Hackathon entry</li>
+            <li class="t" data-en="University &amp; career roadmap" data-ar="خريطة الجامعة والمسار المهني">University &amp; career roadmap</li>
+          </ul>
+          <button class="btn btn-ghost t" data-en="Go Elite" data-ar="انضم لإيليت">Go Elite</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYLLABUS -->
+  <section aria-labelledby="syl-h">
+    <div class="sec-head">
+      <span class="sec-kicker t" data-en="The curriculum" data-ar="المنهج">The curriculum</span>
+      <h2 id="syl-h" class="t" data-en="What your child will learn" data-ar="ماذا سيتعلم طفلك">What your child will learn</h2>
+    </div>
+    <div class="syl-grid">
+      <div class="syl-item">
+        <h3 class="syl-h"><button class="syl-hd" aria-expanded="false" aria-controls="syl-1" onclick="toggleSyl(this)">
+          <span class="syl-left"><span class="syl-num">1</span><span class="syl-title t" data-en="Python fundamentals" data-ar="أساسيات Python">Python fundamentals</span></span>
+          <svg class="syl-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button></h3>
+        <div class="syl-body" id="syl-1"><div class="syl-body-inner"><div class="syl-pad">
+          <p class="syl-desc t" data-en="Variables, loops, functions, and data types. Draw shapes with Turtle and build a password-protected app." data-ar="المتغيرات والحلقات والدوال. رسم أشكال بـ Turtle وبناء تطبيق محمي بكلمة مرور.">Variables, loops, functions, and data types. Draw shapes with Turtle and build a password-protected app.</p>
+          <div class="syl-tags"><span class="stag">Turtle Graphics</span><span class="stag">Functions</span></div>
+          <div class="proj-callout">
+            <span class="proj-ico" aria-hidden="true">🛠</span>
+            <div>
+              <span class="proj-lbl t" data-en="End-of-module project" data-ar="مشروع نهاية الوحدة">End-of-module project</span>
+              <span class="proj-name t" data-en="Build a password-protected vault app" data-ar="بناء تطبيق خزنة محمي بكلمة مرور">Build a password-protected vault app</span>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+      <div class="syl-item">
+        <h3 class="syl-h"><button class="syl-hd" aria-expanded="false" aria-controls="syl-2" onclick="toggleSyl(this)">
+          <span class="syl-left"><span class="syl-num">2</span><span class="syl-title t" data-en="Object-oriented Python" data-ar="البرمجة كائنية التوجه">Object-oriented Python</span></span>
+          <svg class="syl-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button></h3>
+        <div class="syl-body" id="syl-2"><div class="syl-body-inner"><div class="syl-pad">
+          <p class="syl-desc t" data-en="Classes, objects, and inheritance. Build structured programs that mirror how real software is written." data-ar="الفئات والكائنات والوراثة. بناء برامج منظمة تعكس كيفية كتابة البرمجيات الحقيقية.">Classes, objects, and inheritance. Build structured programs that mirror how real software is written.</p>
+          <div class="syl-tags"><span class="stag">Classes</span><span class="stag">Inheritance</span></div>
+          <div class="proj-callout">
+            <span class="proj-ico" aria-hidden="true">🛠</span>
+            <div>
+              <span class="proj-lbl t" data-en="End-of-module project" data-ar="مشروع نهاية الوحدة">End-of-module project</span>
+              <span class="proj-name t" data-en="Build a working bank-account simulator" data-ar="بناء محاكي حساب بنكي متكامل">Build a working bank-account simulator</span>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+      <div class="syl-item">
+        <h3 class="syl-h"><button class="syl-hd" aria-expanded="false" aria-controls="syl-3" onclick="toggleSyl(this)">
+          <span class="syl-left"><span class="syl-num">3</span><span class="syl-title t" data-en="Game dev with Pygame" data-ar="تطوير ألعاب بـ Pygame">Game dev with Pygame</span></span>
+          <svg class="syl-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button></h3>
+        <div class="syl-body" id="syl-3"><div class="syl-body-inner"><div class="syl-pad">
+          <p class="syl-desc t" data-en="Build playable 2D games from scratch. Sprites, collision detection, scoring, and publishing your game live." data-ar="بناء ألعاب ثنائية الأبعاد من الصفر. الـ sprites والتصادم والنتيجة ونشر اللعبة.">Build playable 2D games from scratch. Sprites, collision detection, scoring, and publishing your game live.</p>
+          <div class="syl-tags"><span class="stag">Pygame</span><span class="stag">Physics</span></div>
+          <div class="proj-callout cap">
+            <span class="proj-ico" aria-hidden="true">🏆</span>
+            <div class="proj-text">
+              <span class="proj-lbl t" data-en="Capstone project" data-ar="المشروع النهائي">Capstone project</span>
+              <span class="proj-name t" data-en="Build and publish a playable 2D arcade game" data-ar="بناء ونشر لعبة أركيد ثنائية الأبعاد قابلة للعب">Build and publish a playable 2D arcade game</span>
+            </div>
+            <img class="proj-img" src="images/capstone-python.svg" alt="" width="120" height="80">
+          </div>
+        </div></div></div>
+      </div>
+      <div class="syl-item">
+        <h3 class="syl-h"><button class="syl-hd" aria-expanded="false" aria-controls="syl-4" onclick="toggleSyl(this)">
+          <span class="syl-left"><span class="syl-num">4</span><span class="syl-title t" data-en="Data &amp; automation" data-ar="البيانات والأتمتة">Data &amp; automation</span></span>
+          <svg class="syl-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button></h3>
+        <div class="syl-body" id="syl-4"><div class="syl-body-inner"><div class="syl-pad">
+          <p class="syl-desc t" data-en="Read files, work with APIs, and automate real tasks. Introduction to pandas and data visualization." data-ar="قراءة الملفات والعمل مع الـ APIs وأتمتة المهام. مقدمة إلى pandas وتصوير البيانات.">Read files, work with APIs, and automate real tasks. Introduction to pandas and data visualization.</p>
+          <div class="syl-tags"><span class="stag">APIs</span><span class="stag">Pandas</span></div>
+          <div class="proj-callout">
+            <span class="proj-ico" aria-hidden="true">🛠</span>
+            <div>
+              <span class="proj-lbl t" data-en="End-of-module project" data-ar="مشروع نهاية الوحدة">End-of-module project</span>
+              <span class="proj-name t" data-en="Build a data dashboard that charts real data" data-ar="بناء لوحة بيانات ترسم بيانات حقيقية">Build a data dashboard that charts real data</span>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAREERS -->
+  <section aria-labelledby="career-h">
+    <div class="sec-head">
+      <span class="sec-kicker t" data-en="The payoff" data-ar="النتيجة">The payoff</span>
+      <h2 id="career-h" class="t" data-en="Where this track takes your child" data-ar="أين يأخذ هذا المسار طفلك">Where this track takes your child</h2>
+      <p class="t" data-en="The same skills behind the apps your child already loves." data-ar="نفس المهارات التي تقف وراء التطبيقات التي يحبها طفلك.">The same skills behind the apps your child already loves.</p>
+    </div>
+    <div class="career-grid">
+      <article class="cc feature">
+        <div class="cc-role t" data-en="AI Engineer" data-ar="مهندس ذكاء اصطناعي">AI Engineer</div>
+        <div class="cc-sal">$110k – $180k</div>
+        <div class="cc-sub t" data-en="average annual salary" data-ar="متوسط الراتب سنوياً">average annual salary</div>
+        <div class="cc-apps"><span class="cc-app">ChatGPT</span><span class="cc-app">Tesla FSD</span></div>
+      </article>
+      <article class="cc">
+        <div class="cc-role t" data-en="Software Developer" data-ar="مطور برمجيات">Software Developer</div>
+        <div class="cc-sal">$85k – $140k</div>
+        <div class="cc-sub t" data-en="average annual salary" data-ar="متوسط الراتب سنوياً">average annual salary</div>
+        <div class="cc-apps"><span class="cc-app">Instagram</span><span class="cc-app">YouTube</span><span class="cc-app">Spotify</span></div>
+      </article>
+      <article class="cc">
+        <div class="cc-role t" data-en="Game Developer" data-ar="مطور ألعاب">Game Developer</div>
+        <div class="cc-sal">$70k – $130k</div>
+        <div class="cc-sub t" data-en="average annual salary" data-ar="متوسط الراتب سنوياً">average annual salary</div>
+        <div class="cc-apps"><span class="cc-app">Roblox</span><span class="cc-app">Fortnite</span><span class="cc-app">Minecraft</span></div>
+      </article>
+      <article class="cc">
+        <div class="cc-role t" data-en="Data Scientist" data-ar="عالم بيانات">Data Scientist</div>
+        <div class="cc-sal">$75k – $120k</div>
+        <div class="cc-sub t" data-en="average annual salary" data-ar="متوسط الراتب سنوياً">average annual salary</div>
+        <div class="cc-apps"><span class="cc-app">Netflix</span><span class="cc-app">Google Maps</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ALUMNI / SOCIAL PROOF -->
+  <section aria-labelledby="alum-h">
+    <div class="sec-head">
+      <span class="sec-kicker t" data-en="Alumni" data-ar="الخريجون">Alumni</span>
+      <h2 id="alum-h" class="t" data-en="Where iSchool students go next" data-ar="إلى أين يذهب طلاب iSchool">Where iSchool students go next</h2>
+      <p class="t" data-en="Real students who started young — and the first jobs and projects they built." data-ar="طلاب حقيقيون بدأوا صغاراً — وأول وظائفهم ومشاريعهم.">Real students who started young — and the first jobs and projects they built.</p>
+    </div>
+    <div class="alum-grid">
+      <article class="alum">
+        <div class="alum-top">
+          <img class="alum-av" src="images/student-1.svg" alt="" width="48" height="48">
+          <div>
+            <div class="alum-name t" data-en="Ahmed Hassan" data-ar="أحمد حسن">Ahmed Hassan</div>
+            <div class="alum-meta t" data-en="Started at 12 · Python track" data-ar="بدأ في سن 12 · مسار Python">Started at 12 · Python track</div>
+          </div>
+        </div>
+        <div class="alum-now">
+          <span class="alum-now-lbl t" data-en="Now" data-ar="الآن">Now</span>
+          <div class="alum-role t" data-en="Junior Backend Developer" data-ar="مطوّر Backend مبتدئ">Junior Backend Developer</div>
+          <div class="alum-co"><span class="at">@</span> Breadfast</div>
+        </div>
+      </article>
+
+      <article class="alum">
+        <div class="alum-top">
+          <img class="alum-av" src="images/student-2.svg" alt="" width="48" height="48">
+          <div>
+            <div class="alum-name t" data-en="Mariam Khaled" data-ar="مريم خالد">Mariam Khaled</div>
+            <div class="alum-meta t" data-en="Started at 10 · Web Dev track" data-ar="بدأت في سن 10 · مسار تطوير الويب">Started at 10 · Web Dev track</div>
+          </div>
+        </div>
+        <div class="alum-now">
+          <span class="alum-now-lbl t" data-en="Now" data-ar="الآن">Now</span>
+          <div class="alum-role t" data-en="Frontend Intern" data-ar="متدربة Frontend">Frontend Intern</div>
+          <div class="alum-co"><span class="at">@</span> Instabug</div>
+        </div>
+      </article>
+
+      <article class="alum">
+        <div class="alum-top">
+          <img class="alum-av" src="images/student-3.svg" alt="" width="48" height="48">
+          <div>
+            <div class="alum-name t" data-en="Youssef Adel" data-ar="يوسف عادل">Youssef Adel</div>
+            <div class="alum-meta t" data-en="Started at 14 · Data &amp; AI track" data-ar="بدأ في سن 14 · مسار البيانات والذكاء الاصطناعي">Started at 14 · Data &amp; AI track</div>
+          </div>
+        </div>
+        <div class="alum-now">
+          <span class="alum-now-lbl t" data-en="Now" data-ar="الآن">Now</span>
+          <div class="alum-role t" data-en="Machine Learning Intern" data-ar="متدرب تعلم آلي">Machine Learning Intern</div>
+          <div class="alum-co"><span class="at">@</span> Synapse Analytics</div>
+        </div>
+      </article>
+
+      <article class="alum">
+        <div class="alum-top">
+          <img class="alum-av" src="images/student-4.svg" alt="" width="48" height="48">
+          <div>
+            <div class="alum-name t" data-en="Layla Mostafa" data-ar="ليلى مصطفى">Layla Mostafa</div>
+            <div class="alum-meta t" data-en="Started at 11 · Game Dev track" data-ar="بدأت في سن 11 · مسار تطوير الألعاب">Started at 11 · Game Dev track</div>
+          </div>
+        </div>
+        <div class="alum-now">
+          <span class="alum-now-lbl t" data-en="Now" data-ar="الآن">Now</span>
+          <div class="alum-role t" data-en="Published her first game" data-ar="نشرت أول ألعابها">Published her first game</div>
+          <div class="alum-co t" data-en="100k+ downloads on Google Play" data-ar="أكثر من 100 ألف تحميل على Google Play">100k+ downloads on Google Play</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CERTIFICATE SHOWCASE -->
+  <section class="cert" aria-labelledby="cert-h">
+    <div class="cert-inner">
+      <div class="cert-frame">
+        <img class="cert-img" src="images/certificate.svg" alt="iSchool certificate of completion" width="360" height="240">
+      </div>
+      <div class="cert-body">
+        <span class="sec-kicker t" data-en="Recognized credential" data-ar="شهادة معتمدة">Recognized credential</span>
+        <h2 id="cert-h" class="t" data-en="A certificate they'll be proud of" data-ar="شهادة سيفخرون بها">A certificate they'll be proud of</h2>
+        <p class="t" data-en="Every track ends with a verified iSchool certificate — proof of the projects your child built and the skills they mastered." data-ar="كل مسار ينتهي بشهادة iSchool موثّقة — دليل على المشاريع التي بناها طفلك والمهارات التي أتقنها.">Every track ends with a verified iSchool certificate — proof of the projects your child built and the skills they mastered.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- TRUST -->
+<section class="trust" aria-labelledby="trust-h">
+  <div class="shell trust-inner">
+    <div class="trust-lead">
+      <h2 id="trust-h" class="t" data-en="Trusted by families across the region" data-ar="موثوق من العائلات في جميع أنحاء المنطقة">Trusted by families across the region</h2>
+      <p class="t" data-en="Every plan is built on live, one-on-one teaching — never pre-recorded." data-ar="كل باقة تقوم على تعليم مباشر فردي — وليس تسجيلات مسبقة.">Every plan is built on live, one-on-one teaching — never pre-recorded.</p>
+    </div>
+    <div class="trust-stats">
+      <div><div class="tr-val">15,000+</div><div class="tr-lbl t" data-en="Students enrolled" data-ar="طالب مسجّل">Students enrolled</div></div>
+      <div><div class="tr-val t" data-en="12 grades" data-ar="12 صفاً">12 grades</div><div class="tr-lbl t" data-en="Fully covered" data-ar="مغطاة بالكامل">Fully covered</div></div>
+      <div><div class="tr-val">4.9 / 5</div><div class="tr-lbl t" data-en="Parent rating" data-ar="تقييم الأهالي">Parent rating</div></div>
+      <div><div class="tr-val">100%</div><div class="tr-lbl t" data-en="Live 1-on-1 sessions" data-ar="جلسات فردية مباشرة">Live 1-on-1 sessions</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BUY -->
+<footer class="buy">
+  <div class="shell">
+    <div class="buy-inner">
+      <h2 class="t" data-en="Ready to enroll <em>your child?</em>" data-ar="مستعد لتسجيل <em>طفلك؟</em>">Ready to enroll <em>your child?</em></h2>
+      <p class="t" data-en="Choose a package above and lock in your spot today." data-ar="اختر الباقة أعلاه واحجز مكانك اليوم.">Choose a package above and lock in your spot today.</p>
+      <button class="buy-cta t" data-en="Enroll now" data-ar="سجّل الآن">Enroll now</button>
+      <div class="buy-note t" data-en="Secure payment · Cancel anytime · First session starts this week" data-ar="دفع آمن · إلغاء في أي وقت · الجلسة الأولى هذا الأسبوع">Secure payment · Cancel anytime · First session starts this week</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const gradeData={
+  1:{ages:'6–7',track:'scratch'},2:{ages:'7–8',track:'scratch'},3:{ages:'8–9',track:'scratch'},
+  4:{ages:'9–10',track:'python'},5:{ages:'10–11',track:'python'},
+  6:{ages:'11–12',track:'web'},7:{ages:'12–13',track:'web'},8:{ages:'13–14',track:'web'},
+  9:{ages:'14–15',track:'python'},
+  10:{ages:'15–16',track:'ai'},11:{ages:'16–17',track:'ai'},12:{ages:'17–18',track:'ai'}
+};
+const tracks={
+  scratch:{en:'Scratch Track',ar:'مسار Scratch',badge:{en:'Grade 1–3',ar:'صف 1–3'},steps:[
+    {en:'Scratch interface & basics',ar:'واجهة Scratch والأساسيات',tags:['Sprites','Stage'],state:'done'},
+    {en:'Motion, loops & events',ar:'الحركة والحلقات',tags:['Loops','Events'],state:'done'},
+    {en:'Logic & variables',ar:'الشروط والمتغيرات',tags:['If/Else','Vars'],state:'now'},
+    {en:'Interactive story project',ar:'مشروع قصة تفاعلية',tags:['Project'],state:'lock',proj:true},
+    {en:'Mini game build',ar:'بناء لعبة بسيطة',tags:['Project'],state:'lock',proj:true},
+    {en:'Capstone + certificate',ar:'المشروع النهائي + شهادة',tags:['Capstone'],state:'lock',cap:true}
+  ]},
+  python:{en:'Python Track',ar:'مسار Python',badge:{en:'Grade 4–9',ar:'صف 4–9'},steps:[
+    {en:'Python fundamentals',ar:'أساسيات Python',tags:['Variables','Loops'],state:'done'},
+    {en:'Functions & logic',ar:'الدوال والمنطق',tags:['Functions'],state:'done'},
+    {en:'Turtle & mini apps',ar:'Turtle وتطبيقات بسيطة',tags:['Turtle'],state:'now'},
+    {en:'Object-oriented Python',ar:'البرمجة كائنية',tags:['OOP','Classes'],state:'lock'},
+    {en:'Pygame game dev',ar:'تطوير ألعاب بـ Pygame',tags:['Project'],state:'lock',proj:true},
+    {en:'Publish your game',ar:'انشر لعبتك + شهادة',tags:['Capstone'],state:'lock',cap:true}
+  ]},
+  web:{en:'Web Dev Track',ar:'مسار تطوير الويب',badge:{en:'Grade 6–8',ar:'صف 6–8'},steps:[
+    {en:'HTML & CSS foundations',ar:'أساسيات HTML و CSS',tags:['HTML','CSS'],state:'done'},
+    {en:'JavaScript basics',ar:'JavaScript للمبتدئين',tags:['JS','DOM'],state:'done'},
+    {en:'Responsive design',ar:'تصميم متجاوب',tags:['Flexbox'],state:'now'},
+    {en:'Backend with Flask',ar:'Backend بـ Flask',tags:['Flask'],state:'lock'},
+    {en:'Full-stack project',ar:'مشروع Full-Stack',tags:['Project'],state:'lock',proj:true},
+    {en:'Deploy & launch',ar:'انشر موقعك + شهادة',tags:['Capstone'],state:'lock',cap:true}
+  ]},
+  ai:{en:'Data & AI Track',ar:'مسار البيانات والذكاء الاصطناعي',badge:{en:'Grade 10–12',ar:'صف 10–12'},steps:[
+    {en:'Python for data',ar:'Python للبيانات',tags:['Pandas','NumPy'],state:'done'},
+    {en:'Data visualization',ar:'تصوير البيانات',tags:['Matplotlib'],state:'done'},
+    {en:'Machine learning intro',ar:'مقدمة Machine Learning',tags:['Sklearn'],state:'now'},
+    {en:'Neural networks',ar:'الشبكات العصبية',tags:['TensorFlow'],state:'lock'},
+    {en:'AI capstone project',ar:'مشروع ذكاء اصطناعي',tags:['Project'],state:'lock',proj:true},
+    {en:'Portfolio + certificate',ar:'البورتفوليو + شهادة',tags:['Capstone'],state:'lock',cap:true}
+  ]},
+  game:{en:'Game Dev Track',ar:'مسار تطوير الألعاب',badge:{en:'All grades',ar:'جميع الصفوف'},steps:[
+    {en:'Game design thinking',ar:'تصميم الألعاب',tags:['Concepts'],state:'done'},
+    {en:'Scratch / Python games',ar:'ألعاب بـ Scratch/Python',tags:['Scratch'],state:'done'},
+    {en:'Pygame deep dive',ar:'Pygame متقدم',tags:['Pygame'],state:'now'},
+    {en:'Levels, sound & score',ar:'المستويات والصوت',tags:['Sprites'],state:'lock'},
+    {en:'Multiplayer project',ar:'لعبة متعددة اللاعبين',tags:['Project'],state:'lock',proj:true},
+    {en:'Publish to iSchool Hub',ar:'انشر لعبتك + شهادة',tags:['Capstone'],state:'lock',cap:true}
+  ]}
+};
+
+let lang='en', curTrack='python', curGrade=4, activeStage='python';
+
+let arFontLoaded=false;
+function ensureArabicFont(){
+  if(arFontLoaded) return;
+  arFontLoaded=true;
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  link.href='https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap';
+  document.head.appendChild(link);
+}
+
+function setLang(l){
+  lang=l;
+  if(l==='ar') ensureArabicFont();
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==='ar'?'rtl':'ltr');
+  document.getElementById('btn-en').setAttribute('aria-pressed', l==='en');
+  document.getElementById('btn-ar').setAttribute('aria-pressed', l==='ar');
+  document.querySelectorAll('.t').forEach(el=>{
+    const v=el.getAttribute('data-'+l);
+    if(v!=null) el.innerHTML=v;
+  });
+  renderRoad(curTrack);
+  renderTimeline();
+  renderPanel(activeStage);
+  updateDiscPill();
+  renderPrices();
+}
+
+function selectGrade(g){
+  curGrade=g;
+  const sel=document.getElementById('grade-select');
+  if(sel) sel.value=String(g);
+  setCurrent(gradeData[g].track);
+}
+
+function setCurrent(key){
+  curTrack=key;
+  activeStage=key;
+  renderRoad(key);
+  renderTimeline();
+  renderPanel(activeStage);
+}
+
+function renderRoad(key){
+  const t=tracks[key];
+  document.getElementById('road-name').textContent=lang==='en'?t.en:t.ar;
+  document.getElementById('road-badge').textContent=lang==='en'?t.badge.en:t.badge.ar;
+  const c=document.getElementById('road-steps'); c.innerHTML='';
+  t.steps.forEach((s,i)=>{
+    const isLast=i===t.steps.length-1;
+    const row=document.createElement('li');row.className='step-row';
+    const left=document.createElement('div');left.className='step-l';
+    const dot=document.createElement('div');dot.className='sdot '+s.state;
+    dot.textContent=s.state==='done'?'✓':s.state==='now'?'→':(i+1);
+    dot.setAttribute('aria-hidden','true');
+    left.appendChild(dot);
+    if(!isLast){const ln=document.createElement('div');ln.className='sline'+(s.state==='done'?' done':'');left.appendChild(ln);}
+    const right=document.createElement('div');right.className='step-r';
+    const nm=document.createElement('div');nm.className='sname '+s.state;nm.textContent=lang==='en'?s.en:s.ar;right.appendChild(nm);
+    const tg=document.createElement('div');tg.className='stags';
+    s.tags.forEach(tag=>{const sp=document.createElement('span');sp.className='stag'+(s.proj?' proj':s.cap?' cap':'');sp.textContent=tag;tg.appendChild(sp);});
+    right.appendChild(tg);row.appendChild(left);row.appendChild(right);c.appendChild(row);
+  });
+}
+
+/* ----- pricing (standard prices + live promo discount) ----- */
+const PRICES={ m:{1:199,2:349,3:499}, s:{1:1900,2:3350,3:4790} };
+const PROMO_RATE=0.30;
+let billing='m';
+function fmt(n){return n.toLocaleString('en-US');}
+function renderPrices(){
+  const set=PRICES[billing];
+  const curTxt=billing==='m'?(lang==='ar'?'ج.م / شهر':'EGP/mo'):(lang==='ar'?'ج.م / الفصل':'EGP/sem.');
+  [1,2,3].forEach(k=>{
+    const base=set[k];
+    const amt=document.getElementById('p'+k+'a');
+    const wasEl=document.getElementById('p'+k+'w');
+    document.getElementById('p'+k+'c').textContent=curTxt;
+    if(promoActive){
+      amt.textContent=fmt(Math.round(base*(1-PROMO_RATE)));
+      amt.classList.add('on-promo');
+      wasEl.textContent=fmt(base);
+    }else{
+      amt.textContent=fmt(base);
+      amt.classList.remove('on-promo');
+      wasEl.textContent='';
+    }
+  });
+}
+function setToggle(mode){
+  billing=mode==='m'?'m':'s';
+  const isM=billing==='m';
+  document.getElementById('tg-m').setAttribute('aria-pressed',isM);
+  document.getElementById('tg-f').setAttribute('aria-pressed',!isM);
+  document.getElementById('disc-pill').hidden=isM||promoActive;
+  updateDiscPill();
+  renderPrices();
+}
+function updateDiscPill(){document.getElementById('disc-pill').textContent=lang==='ar'?'وفّر 20%':'Save 20%';}
+
+/* ----- interactive track timeline ----- */
+const stageOrder=['scratch','python','web','ai'];
+const STAGES={
+  scratch:{ name:{en:'Scratch',ar:'Scratch'}, grade:{en:'Grade 1–3',ar:'صف 1–3'}, age:{en:'Ages 6–9',ar:'عمر 6–9'},
+    learn:{en:'Drag-and-drop blocks, loops, events and game logic — the foundation of coding.',ar:'لبنات السحب والإفلات والحلقات والأحداث ومنطق الألعاب — أساس البرمجة.'},
+    capstone:{en:'Publish an interactive story and a mini-game.',ar:'نشر قصة تفاعلية ولعبة صغيرة.'},
+    next:{en:'Python',ar:'Python'} },
+  python:{ name:{en:'Python',ar:'Python'}, grade:{en:'Grade 4–9',ar:'صف 4–9'}, age:{en:'Ages 9–15',ar:'عمر 9–15'},
+    learn:{en:'Real text-based coding: variables, functions, OOP and games with Pygame.',ar:'برمجة نصية حقيقية: المتغيرات والدوال والبرمجة كائنية التوجه وألعاب Pygame.'},
+    capstone:{en:'Build and publish a playable 2D game.',ar:'بناء ونشر لعبة ثنائية الأبعاد قابلة للعب.'},
+    next:{en:'Web Dev',ar:'تطوير الويب'} },
+  web:{ name:{en:'Web Dev',ar:'تطوير الويب'}, grade:{en:'Grade 6–8',ar:'صف 6–8'}, age:{en:'Ages 11–14',ar:'عمر 11–14'},
+    learn:{en:'HTML, CSS, JavaScript and full-stack apps powered by Flask.',ar:'HTML و CSS و JavaScript وتطبيقات متكاملة باستخدام Flask.'},
+    capstone:{en:'Design and deploy a full-stack web app, live.',ar:'تصميم ونشر تطبيق ويب متكامل مباشرةً.'},
+    next:{en:'Data & AI',ar:'البيانات والذكاء الاصطناعي'} },
+  ai:{ name:{en:'Data & AI',ar:'البيانات والذكاء الاصطناعي'}, grade:{en:'Grade 10–12',ar:'صف 10–12'}, age:{en:'Ages 15–18',ar:'عمر 15–18'},
+    learn:{en:'Pandas, data visualization, machine learning and neural networks.',ar:'Pandas وتصوير البيانات والتعلم الآلي والشبكات العصبية.'},
+    capstone:{en:'Train and present a real machine-learning model.',ar:'تدريب وعرض نموذج تعلم آلي حقيقي.'},
+    next:{en:'University & career portfolio',ar:'الجامعة وملف الأعمال المهني'} }
+};
+const L={
+  learn:{en:"What they'll learn",ar:'ماذا سيتعلمون'},
+  capstone:{en:'Final capstone project',ar:'المشروع النهائي'},
+  next:{en:'Unlocks next',ar:'يفتح بعده'},
+  current:{en:'Recommended now',ar:'موصى به الآن'},
+  done:{en:'Foundation stage',ar:'مرحلة تأسيسية'},
+  locked:{en:'Unlocked after the earlier stages',ar:'يُفتح بعد المراحل السابقة'}
+};
+const ICON_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+const ICON_LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+function stageStatus(i,ci){ return i<ci?'done':i===ci?'current':'locked'; }
+
+function renderTimeline(){
+  const ci=stageOrder.indexOf(curTrack);
+  const tl=document.getElementById('timeline');
+  tl.innerHTML='';
+  stageOrder.forEach((key,i)=>{
+    const st=stageStatus(i,ci);
+    const sel=key===activeStage;
+    const node=document.createElement('button');
+    node.type='button';
+    node.id='tl-'+key;
+    node.className='tlnode '+st+(sel?' selected':'');
+    node.setAttribute('role','tab');
+    node.setAttribute('aria-selected', sel?'true':'false');
+    node.setAttribute('aria-controls','tl-panel');
+    node.tabIndex=sel?0:-1;
+    const badge=st==='done'?ICON_CHECK:st==='locked'?ICON_LOCK:String(i+1);
+    node.innerHTML='<span class="tl-badge">'+badge+'</span><span class="tl-name">'+STAGES[key].name[lang]+'</span>';
+    node.onclick=()=>selectStage(key,true);
+    tl.appendChild(node);
+    if(i<stageOrder.length-1){
+      const ln=document.createElement('span');
+      ln.className='tl-conn'+(i<ci?' colored':'');
+      ln.setAttribute('aria-hidden','true');
+      tl.appendChild(ln);
+    }
+  });
+  tl.onkeydown=(e)=>{
+    const cur=stageOrder.indexOf(activeStage);
+    let n=-1;
+    if(e.key==='ArrowRight') n=Math.min(stageOrder.length-1,cur+1);
+    else if(e.key==='ArrowLeft') n=Math.max(0,cur-1);
+    else if(e.key==='Home') n=0;
+    else if(e.key==='End') n=stageOrder.length-1;
+    if(n>=0){ e.preventDefault(); selectStage(stageOrder[n],true); }
+  };
+}
+
+function selectStage(key,focus){
+  activeStage=key;
+  renderTimeline();
+  renderPanel(key);
+  if(focus){ const el=document.getElementById('tl-'+key); if(el) el.focus(); }
+}
+
+function renderPanel(key){
+  const s=STAGES[key];
+  const ci=stageOrder.indexOf(curTrack), ix=stageOrder.indexOf(key);
+  const st=stageStatus(ix,ci);
+  const panel=document.getElementById('tl-panel');
+  panel.setAttribute('aria-labelledby','tl-'+key);
+  panel.innerHTML=
+    '<div class="tlp-head"><h3 class="tlp-name">'+s.name[lang]+'</h3>'+
+      '<span class="tlp-status '+st+'">'+L[st][lang]+'</span></div>'+
+    '<div class="tlp-meta"><span class="tlp-chip">'+s.grade[lang]+'</span><span class="tlp-chip">'+s.age[lang]+'</span></div>'+
+    '<div class="tlp-grid">'+
+      '<div class="tlp-block"><div class="tlp-lbl">'+L.learn[lang]+'</div><p>'+s.learn[lang]+'</p></div>'+
+      '<div class="tlp-block"><div class="tlp-lbl">'+L.capstone[lang]+'</div>'+
+        '<img class="tlp-cap-img" src="images/capstone-'+key+'.svg" alt="'+(lang==='en'?'Capstone project preview':'معاينة المشروع النهائي')+'">'+
+        '<p>'+s.capstone[lang]+'</p></div>'+
+    '</div>'+
+    '<div class="tlp-next"><span class="tlp-next-lbl">'+L.next[lang]+'</span><span class="tlp-arrow">→</span><span class="tlp-next-val">'+s.next[lang]+'</span></div>';
+}
+
+function toggleSyl(btn){
+  const item=btn.closest('.syl-item');
+  const body=item.querySelector('.syl-body');
+  const open=btn.getAttribute('aria-expanded')==='true';
+  document.querySelectorAll('.syl-item').forEach(it=>{
+    it.querySelector('.syl-hd').setAttribute('aria-expanded','false');
+    it.querySelector('.syl-body').classList.remove('open');
+  });
+  if(!open){ btn.setAttribute('aria-expanded','true'); body.classList.add('open'); }
+}
+
+let promoActive=true;
+function dismissPromo(){
+  document.getElementById('promo').hidden=true;
+  promoActive=false;
+  setToggle(billing);
+  try{ localStorage.setItem('ischool_promo30_dismissed','1'); }catch(e){}
+}
+try{ if(localStorage.getItem('ischool_promo30_dismissed')==='1'){ promoActive=false; document.getElementById('promo').hidden=true; } }catch(e){}
+
+renderRoad('python');
+renderTimeline();
+renderPanel(activeStage);
+setToggle('m');
+</script>
+</body>
+</html>
