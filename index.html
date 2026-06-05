@@ -232,11 +232,6 @@ section + section{margin-top:clamp(48px,6vw,88px);}
 .stag.cap{background:var(--tint-blue);color:var(--brand-deep);}
 
 /* PACKAGES */
-.toggle-row{display:flex;align-items:center;gap:var(--space-xs);margin-bottom:var(--space-md);flex-wrap:wrap;}
-.tog{display:flex;background:var(--surface-2);border-radius:var(--r-pill);padding:4px;}
-.togbtn{min-height:44px;padding:0 18px;border-radius:var(--r-pill);border:none;background:transparent;font-size:var(--fs-sm);font-weight:700;color:var(--muted);transition:background .15s,color .15s;}
-.togbtn[aria-pressed="true"]{background:var(--brand);color:var(--on-dark);}
-.disc-pill{background:var(--tint-warm);color:var(--orange-ink);font-size:var(--fs-xs);font-weight:700;padding:5px 12px;border-radius:var(--r-pill);}
 
 .pkg-list{display:flex;flex-direction:column;gap:var(--space-sm);}
 .pkg{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--space-md);box-shadow:var(--shadow);position:relative;}
@@ -251,6 +246,9 @@ section + section{margin-top:clamp(48px,6vw,88px);}
 .pkg-amount.on-promo{color:var(--orange);}
 .pkg-cur{font-size:var(--fs-xs);font-weight:600;color:var(--muted);}
 .pkg-was{font-size:var(--fs-xs);color:var(--muted);text-decoration:line-through;margin-top:3px;min-height:1em;}
+.pkg-ico{font-size:2rem;line-height:1;display:block;margin-bottom:var(--space-2xs);}
+.pkg-badge{display:inline-block;margin-top:10px;background:var(--tint-blue);color:var(--brand-deep);font-size:var(--fs-xs);font-weight:700;padding:7px 15px;border-radius:var(--r-pill);}
+.pkg-divider{height:1px;background:var(--line);margin:var(--space-sm) 0 0;}
 .pkg-feats{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:var(--space-sm);}
 .pkg-feats li{font-size:var(--fs-sm);font-weight:500;color:var(--body);display:flex;align-items:flex-start;gap:9px;}
 .pkg-feats li::before{content:'';flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--tint-blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23043FAD' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/12px no-repeat;}
@@ -259,7 +257,7 @@ section + section{margin-top:clamp(48px,6vw,88px);}
 .btn-primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);}
 .btn-ghost{background:var(--surface);color:var(--brand);}
 .btn-ghost:hover{background:var(--tint-blue);}
-.btn:active,.buy-cta:active,.ttab:active,.togbtn:active,.lbtn:active{transform:translateY(1px);}
+.btn:active,.buy-cta:active,.ttab:active,.lbtn:active{transform:translateY(1px);}
 
 /* SYLLABUS */
 .syl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-sm);}
@@ -463,61 +461,70 @@ section + section{margin-top:clamp(48px,6vw,88px);}
 
     <div>
       <div class="sec-head">
-        <span class="sec-kicker t" data-en="Flexible plans" data-ar="خطط مرنة">Flexible plans</span>
-        <h2 class="t" data-en="Choose your package" data-ar="اختر باقتك">Choose your package</h2>
-      </div>
-      <div class="toggle-row" role="group" aria-label="Billing period">
-        <div class="tog">
-          <button class="togbtn" id="tg-m" aria-pressed="true" onclick="setToggle('m')"><span class="t" data-en="Monthly" data-ar="شهري">Monthly</span></button>
-          <button class="togbtn" id="tg-f" aria-pressed="false" onclick="setToggle('f')"><span class="t" data-en="Full semester" data-ar="الفصل كامل">Full semester</span></button>
-        </div>
-        <span class="disc-pill" id="disc-pill" hidden>Save 20%</span>
+        <span class="sec-kicker t" data-en="Private Classes · 1 Teacher &amp; 1 Student" data-ar="فصول خاصة · معلّم واحد وطالب واحد">Private Classes · 1 Teacher &amp; 1 Student</span>
+        <h2 class="t" data-en="Choose your plan" data-ar="اختر خطتك">Choose your plan</h2>
       </div>
 
       <div class="pkg-list">
         <article class="pkg">
           <div class="pkg-top">
-            <div><h3 class="pkg-name t" data-en="Starter" data-ar="أساسي">Starter</h3><div class="pkg-sub t" data-en="4 sessions / month" data-ar="4 جلسات شهرياً">4 sessions / month</div></div>
-            <div class="pkg-price-wrap"><div class="pkg-price"><span class="pkg-amount" id="p1a">199</span><span class="pkg-cur" id="p1c">EGP/mo</span></div><div class="pkg-was" id="p1w"></div></div>
+            <div>
+              <span class="pkg-ico" aria-hidden="true">🔭</span>
+              <h3 class="pkg-name t" data-en="Beginner" data-ar="مبتدئ">Beginner</h3>
+              <span class="pkg-badge t" data-en="3 Months · 12 Live Sessions" data-ar="3 أشهر · 12 جلسة مباشرة">3 Months · 12 Live Sessions</span>
+            </div>
           </div>
+          <div class="pkg-divider"></div>
           <ul class="pkg-feats">
-            <li class="t" data-en="4 live 1-on-1 sessions" data-ar="4 جلسات فردية مباشرة">4 live 1-on-1 sessions</li>
-            <li class="t" data-en="Full course materials included" data-ar="المواد الدراسية كاملة">Full course materials included</li>
-            <li class="t" data-en="Student progress dashboard" data-ar="لوحة تتبع تقدم الطالب">Student progress dashboard</li>
-            <li class="t" data-en="Monthly parent report" data-ar="تقرير شهري للوالدين">Monthly parent report</li>
+            <li class="t" data-en="1 Level" data-ar="مستوى واحد">1 Level</li>
+            <li class="t" data-en="2 Freeze Credits" data-ar="تجميد الاشتراك مرتين">2 Freeze Credits</li>
+            <li class="t" data-en="2 Reschedule Credits" data-ar="إعادة جدولة مرتين">2 Reschedule Credits</li>
+            <li class="t" data-en="Customer Support" data-ar="دعم العملاء">Customer Support</li>
+            <li class="t" data-en="Earn 1000 Coins" data-ar="اكسب 1000 عملة">Earn 1000 Coins</li>
           </ul>
-          <button class="btn btn-ghost t" data-en="Start learning" data-ar="ابدأ التعلم">Start learning</button>
-        </article>
-
-        <article class="pkg star">
-          <span class="pkg-flag t" data-en="Most popular" data-ar="الأكثر شيوعاً">Most popular</span>
-          <div class="pkg-top">
-            <div><h3 class="pkg-name t" data-en="Pro" data-ar="برو">Pro</h3><div class="pkg-sub t" data-en="8 sessions / month · Full track" data-ar="8 جلسات شهرياً · المسار كامل">8 sessions / month · Full track</div></div>
-            <div class="pkg-price-wrap"><div class="pkg-price"><span class="pkg-amount" id="p2a">349</span><span class="pkg-cur" id="p2c">EGP/mo</span></div><div class="pkg-was" id="p2w"></div></div>
-          </div>
-          <ul class="pkg-feats">
-            <li class="t" data-en="8 live 1-on-1 sessions" data-ar="8 جلسات فردية مباشرة">8 live 1-on-1 sessions</li>
-            <li class="t" data-en="3 real-world projects" data-ar="3 مشاريع من الواقع">3 real-world projects</li>
-            <li class="t" data-en="Parent tracking dashboard" data-ar="لوحة متابعة للوالدين">Parent tracking dashboard</li>
-            <li class="t" data-en="Career path guidance" data-ar="توجيه المسار المهني">Career path guidance</li>
-            <li class="t" data-en="Semester completion certificate" data-ar="شهادة إتمام الفصل">Semester completion certificate</li>
-          </ul>
-          <button class="btn btn-primary t" data-en="Enroll in Pro" data-ar="اشترك في برو">Enroll in Pro</button>
+          <button class="btn btn-ghost t" data-en="Subscribe Now" data-ar="اشترك الآن">Subscribe Now</button>
         </article>
 
         <article class="pkg">
           <div class="pkg-top">
-            <div><h3 class="pkg-name t" data-en="Elite" data-ar="إيليت">Elite</h3><div class="pkg-sub t" data-en="12 sessions / month · Mentorship" data-ar="12 جلسة شهرياً · مرشد خاص">12 sessions / month · Mentorship</div></div>
-            <div class="pkg-price-wrap"><div class="pkg-price"><span class="pkg-amount" id="p3a">499</span><span class="pkg-cur" id="p3c">EGP/mo</span></div><div class="pkg-was" id="p3w"></div></div>
+            <div>
+              <span class="pkg-ico" aria-hidden="true">🧑‍🚀</span>
+              <h3 class="pkg-name t" data-en="Advanced" data-ar="متقدم">Advanced</h3>
+              <span class="pkg-badge t" data-en="6 Months · 24 Live Sessions" data-ar="6 أشهر · 24 جلسة مباشرة">6 Months · 24 Live Sessions</span>
+            </div>
           </div>
+          <div class="pkg-divider"></div>
           <ul class="pkg-feats">
-            <li class="t" data-en="12 live 1-on-1 sessions" data-ar="12 جلسة فردية مباشرة">12 live 1-on-1 sessions</li>
-            <li class="t" data-en="5 portfolio projects" data-ar="5 مشاريع للبورتفوليو">5 portfolio projects</li>
-            <li class="t" data-en="Dedicated personal mentor" data-ar="مرشد شخصي مخصص">Dedicated personal mentor</li>
-            <li class="t" data-en="Hackathon entry" data-ar="دخول هاكاثون">Hackathon entry</li>
-            <li class="t" data-en="University &amp; career roadmap" data-ar="خريطة الجامعة والمسار المهني">University &amp; career roadmap</li>
+            <li class="t" data-en="2 Levels" data-ar="مستويان">2 Levels</li>
+            <li class="t" data-en="6 Freeze Credits" data-ar="تجميد الاشتراك 6 مرات">6 Freeze Credits</li>
+            <li class="t" data-en="6 Reschedule Credits" data-ar="إعادة جدولة 6 مرات">6 Reschedule Credits</li>
+            <li class="t" data-en="Customer Support" data-ar="دعم العملاء">Customer Support</li>
+            <li class="t" data-en="Parent Support" data-ar="دعم أولياء الأمور">Parent Support</li>
+            <li class="t" data-en="Earn 4000 Coins" data-ar="اكسب 4000 عملة">Earn 4000 Coins</li>
           </ul>
-          <button class="btn btn-ghost t" data-en="Go Elite" data-ar="انضم لإيليت">Go Elite</button>
+          <button class="btn btn-ghost t" data-en="Subscribe Now" data-ar="اشترك الآن">Subscribe Now</button>
+        </article>
+
+        <article class="pkg star">
+          <span class="pkg-flag t" data-en="Best value" data-ar="الأفضل قيمة">Best value</span>
+          <div class="pkg-top">
+            <div>
+              <span class="pkg-ico" aria-hidden="true">🚀</span>
+              <h3 class="pkg-name t" data-en="Professional" data-ar="محترف">Professional</h3>
+              <span class="pkg-badge t" data-en="12 Months · 48 Live Sessions" data-ar="12 شهر · 48 جلسة مباشرة">12 Months · 48 Live Sessions</span>
+            </div>
+          </div>
+          <div class="pkg-divider"></div>
+          <ul class="pkg-feats">
+            <li class="t" data-en="4 Levels" data-ar="4 مستويات">4 Levels</li>
+            <li class="t" data-en="12 Freeze Credits" data-ar="تجميد الاشتراك 12 مرة">12 Freeze Credits</li>
+            <li class="t" data-en="16 Reschedule Credits" data-ar="إعادة جدولة 16 مرة">16 Reschedule Credits</li>
+            <li class="t" data-en="Customer Support" data-ar="دعم العملاء">Customer Support</li>
+            <li class="t" data-en="Parent Support" data-ar="دعم أولياء الأمور">Parent Support</li>
+            <li class="t" data-en="Full Leaderboard" data-ar="لوحة الصدارة الكاملة">Full Leaderboard</li>
+            <li class="t" data-en="Earn 10000 Coins" data-ar="اكسب 10000 عملة">Earn 10000 Coins</li>
+          </ul>
+          <button class="btn btn-primary t" data-en="Subscribe Now" data-ar="اشترك الآن">Subscribe Now</button>
         </article>
       </div>
     </div>
@@ -816,8 +823,6 @@ function setLang(l){
   renderRoad(curTrack);
   renderTimeline();
   renderPanel(activeStage);
-  updateDiscPill();
-  renderPrices();
 }
 
 function selectGrade(g){
@@ -856,41 +861,6 @@ function renderRoad(key){
     right.appendChild(tg);row.appendChild(left);row.appendChild(right);c.appendChild(row);
   });
 }
-
-/* ----- pricing (standard prices + live promo discount) ----- */
-const PRICES={ m:{1:199,2:349,3:499}, s:{1:1900,2:3350,3:4790} };
-const PROMO_RATE=0.30;
-let billing='m';
-function fmt(n){return n.toLocaleString('en-US');}
-function renderPrices(){
-  const set=PRICES[billing];
-  const curTxt=billing==='m'?(lang==='ar'?'ج.م / شهر':'EGP/mo'):(lang==='ar'?'ج.م / الفصل':'EGP/sem.');
-  [1,2,3].forEach(k=>{
-    const base=set[k];
-    const amt=document.getElementById('p'+k+'a');
-    const wasEl=document.getElementById('p'+k+'w');
-    document.getElementById('p'+k+'c').textContent=curTxt;
-    if(promoActive){
-      amt.textContent=fmt(Math.round(base*(1-PROMO_RATE)));
-      amt.classList.add('on-promo');
-      wasEl.textContent=fmt(base);
-    }else{
-      amt.textContent=fmt(base);
-      amt.classList.remove('on-promo');
-      wasEl.textContent='';
-    }
-  });
-}
-function setToggle(mode){
-  billing=mode==='m'?'m':'s';
-  const isM=billing==='m';
-  document.getElementById('tg-m').setAttribute('aria-pressed',isM);
-  document.getElementById('tg-f').setAttribute('aria-pressed',!isM);
-  document.getElementById('disc-pill').hidden=isM||promoActive;
-  updateDiscPill();
-  renderPrices();
-}
-function updateDiscPill(){document.getElementById('disc-pill').textContent=lang==='ar'?'وفّر 20%':'Save 20%';}
 
 /* ----- interactive track timeline ----- */
 const stageOrder=['scratch','python','web','ai'];
@@ -999,19 +969,15 @@ function toggleSyl(btn){
   if(!open){ btn.setAttribute('aria-expanded','true'); body.classList.add('open'); }
 }
 
-let promoActive=true;
 function dismissPromo(){
   document.getElementById('promo').hidden=true;
-  promoActive=false;
-  setToggle(billing);
   try{ localStorage.setItem('ischool_promo30_dismissed','1'); }catch(e){}
 }
-try{ if(localStorage.getItem('ischool_promo30_dismissed')==='1'){ promoActive=false; document.getElementById('promo').hidden=true; } }catch(e){}
+try{ if(localStorage.getItem('ischool_promo30_dismissed')==='1'){ document.getElementById('promo').hidden=true; } }catch(e){}
 
 renderRoad('python');
 renderTimeline();
 renderPanel(activeStage);
-setToggle('m');
 </script>
 </body>
 </html>
